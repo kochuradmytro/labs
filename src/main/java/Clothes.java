@@ -42,4 +42,32 @@
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Clothes{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", size='" + size + '\'' +
+                ", price=" + price +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Clothes clothes = (Clothes) obj;
+
+        return id == clothes.id &&
+                Double.compare(price, clothes.price) == 0 &&
+                name.equals(clothes.name) &&
+                size.equals(clothes.size);
+    }
 }

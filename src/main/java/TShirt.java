@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Клас, що описує футболку.
  */
 public class TShirt extends Shirts {

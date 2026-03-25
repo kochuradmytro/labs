@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Клас, що описує джинси.
  */
 public class Jeans extends Pants {

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Клас, що описує штани.
  */
 public class Pants extends Clothes {

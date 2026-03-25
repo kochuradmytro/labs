@@ -1,9 +1,7 @@
 /**
- * Клас, що описує одяг.
+ * Базовий клас, що описує одяг.
  */
 public class Clothes {
-    private static int objectsCount = 0;
-
     private int id;
     private String name;
     private String size;
@@ -17,7 +15,6 @@ public class Clothes {
         setName(name);
         setSize(size);
         setPrice(price);
-        objectsCount++;
     }
 
     /**
@@ -32,14 +29,6 @@ public class Clothes {
         this.name = other.name;
         this.size = other.size;
         this.price = other.price;
-        objectsCount++;
-    }
-
-    /**
-     * Повертає кількість створених об'єктів.
-     */
-    public static int getObjectsCount() {
-        return objectsCount;
     }
 
     /**

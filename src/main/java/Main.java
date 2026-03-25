@@ -12,7 +12,7 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Clothes> clothesList = new ArrayList<>();
+        List<Clothes> clothesList = new ArrayList<Clothes>();
 
         boolean running = true;
 
@@ -28,6 +28,9 @@ public class Main {
                     printAllClothes(clothesList);
                     break;
                 case 3:
+                    printObjectsCount();
+                    break;
+                case 4:
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
@@ -46,7 +49,8 @@ public class Main {
         System.out.println("\nМеню:");
         System.out.println("1. Створити новий об’єкт");
         System.out.println("2. Вивести інформацію про всі об’єкти");
-        System.out.println("3. Завершити роботу");
+        System.out.println("3. Вивести кількість створених об’єктів");
+        System.out.println("4. Завершити роботу");
     }
 
     /**
@@ -94,15 +98,24 @@ public class Main {
      * Виводить інформацію про всі об'єкти.
      */
     private static void printAllClothes(List<Clothes> clothesList) {
+        int i;
+
         if (clothesList.isEmpty()) {
             System.out.println("Список об'єктів порожній.");
             return;
         }
 
         System.out.println("\nІнформація про всі об'єкти:");
-        for (Clothes clothes : clothesList) {
-            System.out.println(clothes);
+        for (i = 0; i < clothesList.size(); i++) {
+            System.out.println(clothesList.get(i));
         }
+    }
+
+    /**
+     * Виводить кількість створених об'єктів.
+     */
+    private static void printObjectsCount() {
+        System.out.println("Кількість створених об'єктів: " + Clothes.getObjectsCount());
     }
 
     /**

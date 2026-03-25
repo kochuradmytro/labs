@@ -1,17 +1,25 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Клас для запуску програми та керування колекцією одягу через консольне меню.
  */
 public class Main {
 
+    private static final String FILE_NAME = "input.txt";
     /**
      * Точка входу в програму.
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Clothes> clothesList = new ArrayList<Clothes>();
+
+        loadFromFile(clothesList);
 
         boolean running = true;
 
@@ -27,6 +35,7 @@ public class Main {
                     printAllClothes(clothesList);
                     break;
                 case 3:
+                    saveToFile(clothesList);
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
@@ -36,6 +45,268 @@ public class Main {
         }
 
         scanner.close();
+    }
+
+    /**
+     * Зчитує об'єкти з файлу та додає їх до колекції.
+     */
+    private static void loadFromFile(ArrayList<Clothes> clothesList) {
+        BufferedReader reader = null;
+        String line;
+        int lineNumber = 0;
+
+        try {
+            reader = new BufferedReader(new FileReader(FILE_NAME));
+
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                try {
+                    Clothes clothes = parseClothes(line);
+                    if (clothes != null) {
+                        clothesList.add(clothes);
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Помилка в рядку " + lineNumber + ": " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Файл " + FILE_NAME + " не знайдено або недоступний для читання.");
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    System.out.println("Помилка закриття файлу після читання.");
+                }
+            }
+        }
+    }
+
+    /**
+     * Записує всі об'єкти з колекції у файл.
+     */
+    private static void saveToFile(ArrayList<Clothes> clothesList) {
+        BufferedWriter writer = null;
+        int i;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(FILE_NAME));
+
+            for (i = 0; i < clothesList.size(); i++) {
+                writer.write(toFileString(clothesList.get(i)));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Помилка запису у файл " + FILE_NAME + ".");
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("Помилка закриття файлу після запису.");
+                }
+            }
+        }
+    }
+
+    /**
+     * Створює об'єкт відповідного класу на основі рядка з файлу.
+     */
+    private static Clothes parseClothes(String line) {
+        String[] parts = line.split(";");
+        int id;
+        double price;
+        boolean booleanValue;
+
+        if (parts.length == 0 || parts[0].trim().isEmpty()) {
+            throw new IllegalArgumentException("Не вказано тип об'єкта.");
+        }
+
+        if (parts[0].equals("Clothes")) {
+            if (parts.length != 5) {
+                throw new IllegalArgumentException("Некоректна кількість полів для Clothes.");
+            }
+
+            try {
+                id = Integer.parseInt(parts[1].trim());
+                price = Double.parseDouble(parts[4].trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
+            }
+
+            return new Clothes(
+                    id,
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    price
+            );
+        }
+
+        if (parts[0].equals("Pants")) {
+            if (parts.length != 6) {
+                throw new IllegalArgumentException("Некоректна кількість полів для Pants.");
+            }
+
+            try {
+                id = Integer.parseInt(parts[1].trim());
+                price = Double.parseDouble(parts[4].trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
+            }
+
+            return new Pants(
+                    id,
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    price,
+                    parts[5].trim()
+            );
+        }
+
+        if (parts[0].equals("Shirts")) {
+            if (parts.length != 6) {
+                throw new IllegalArgumentException("Некоректна кількість полів для Shirts.");
+            }
+
+            try {
+                id = Integer.parseInt(parts[1].trim());
+                price = Double.parseDouble(parts[4].trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
+            }
+
+            return new Shirts(
+                    id,
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    price,
+                    parts[5].trim()
+            );
+        }
+
+        if (parts[0].equals("Jeans")) {
+            if (parts.length != 8) {
+                throw new IllegalArgumentException("Некоректна кількість полів для Jeans.");
+            }
+
+            try {
+                id = Integer.parseInt(parts[1].trim());
+                price = Double.parseDouble(parts[4].trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
+            }
+
+            if (parts[7].trim().equalsIgnoreCase("true")) {
+                booleanValue = true;
+            } else if (parts[7].trim().equalsIgnoreCase("false")) {
+                booleanValue = false;
+            } else {
+                throw new IllegalArgumentException("Некоректне логічне значення у файлі.");
+            }
+
+            return new Jeans(
+                    id,
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    price,
+                    parts[5].trim(),
+                    parts[6].trim(),
+                    booleanValue
+            );
+        }
+
+        if (parts[0].equals("TShirt")) {
+            if (parts.length != 8) {
+                throw new IllegalArgumentException("Некоректна кількість полів для TShirt.");
+            }
+
+            try {
+                id = Integer.parseInt(parts[1].trim());
+                price = Double.parseDouble(parts[4].trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
+            }
+
+            if (parts[7].trim().equalsIgnoreCase("true")) {
+                booleanValue = true;
+            } else if (parts[7].trim().equalsIgnoreCase("false")) {
+                booleanValue = false;
+            } else {
+                throw new IllegalArgumentException("Некоректне логічне значення у файлі.");
+            }
+
+            return new TShirt(
+                    id,
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    price,
+                    parts[5].trim(),
+                    parts[6].trim(),
+                    booleanValue
+            );
+        }
+
+        throw new IllegalArgumentException("Невідомий тип об'єкта: " + parts[0]);
+    }
+
+    /**
+     * Перетворює об'єкт у рядок для запису у файл.
+     */
+    private static String toFileString(Clothes clothes) {
+        if (clothes instanceof Jeans) {
+            Jeans jeans = (Jeans) clothes;
+            return "Jeans;" +
+                    jeans.getId() + ";" +
+                    jeans.getName() + ";" +
+                    jeans.getSize() + ";" +
+                    jeans.getPrice() + ";" +
+                    jeans.getMaterial() + ";" +
+                    jeans.getFitType() + ";" +
+                    jeans.isRipped();
+        }
+
+        if (clothes instanceof TShirt) {
+            TShirt tShirt = (TShirt) clothes;
+            return "TShirt;" +
+                    tShirt.getId() + ";" +
+                    tShirt.getName() + ";" +
+                    tShirt.getSize() + ";" +
+                    tShirt.getPrice() + ";" +
+                    tShirt.getSleeveType() + ";" +
+                    tShirt.getPrintType() + ";" +
+                    tShirt.isSportsStyle();
+        }
+
+        if (clothes instanceof Pants) {
+            Pants pants = (Pants) clothes;
+            return "Pants;" +
+                    pants.getId() + ";" +
+                    pants.getName() + ";" +
+                    pants.getSize() + ";" +
+                    pants.getPrice() + ";" +
+                    pants.getMaterial();
+        }
+
+        if (clothes instanceof Shirts) {
+            Shirts shirt = (Shirts) clothes;
+            return "Shirts;" +
+                    shirt.getId() + ";" +
+                    shirt.getName() + ";" +
+                    shirt.getSize() + ";" +
+                    shirt.getPrice() + ";" +
+                    shirt.getSleeveType();
+        }
+
+        return "Clothes;" +
+                clothes.getId() + ";" +
+                clothes.getName() + ";" +
+                clothes.getSize() + ";" +
+                clothes.getPrice();
     }
 
     /**

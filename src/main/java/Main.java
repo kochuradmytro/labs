@@ -1,7 +1,9 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * Клас для запуску програми та зчитування даних про одяг з клавіатури.
+ * Клас для запуску програми та керування списком одягу через консольне меню.
  */
 public class Main {
 
@@ -10,32 +12,97 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        List<Clothes> clothesList = new ArrayList<>();
 
-        int n = readPositiveInt(scanner, "Введіть кількість елементів масиву: ");
-        Clothes[] clothesArray = new Clothes[n];
+        boolean running = true;
 
-        for (int i = 0; i < n; i++) {
-            System.out.println("\nОдяг " + (i + 1));
+        while (running) {
+            printMenu();
+            int choice = readMenuChoice(scanner);
 
-            int id = readPositiveInt(scanner, "Введіть id: ");
-            String name = readNonEmptyString(scanner, "Введіть назву: ");
-            String size = readNonEmptyString(scanner, "Введіть розмір: ");
-            double price = readPositiveDouble(scanner, "Введіть ціну: ");
-
-            try {
-                clothesArray[i] = new Clothes(id, name, size, price);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Помилка створення об'єкта: " + e.getMessage());
-                i--;
+            switch (choice) {
+                case 1:
+                    createClothes(scanner, clothesList);
+                    break;
+                case 2:
+                    printAllClothes(clothesList);
+                    break;
+                case 3:
+                    System.out.println("Роботу програми завершено.");
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Помилка: такого пункту меню не існує.");
             }
         }
 
-        System.out.println("\nІнформація про всі об'єкти:");
-        for (Clothes clothes : clothesArray) {
-            System.out.println(clothes);
+        scanner.close();
+    }
+
+    /**
+     * Виводить консольне меню.
+     */
+    private static void printMenu() {
+        System.out.println("\nМеню:");
+        System.out.println("1. Створити новий об’єкт");
+        System.out.println("2. Вивести інформацію про всі об’єкти");
+        System.out.println("3. Завершити роботу");
+    }
+
+    /**
+     * Зчитує вибір користувача в меню.
+     */
+    private static int readMenuChoice(Scanner scanner) {
+        while (true) {
+            System.out.print("Оберіть пункт меню: ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Помилка: рядок не може бути порожнім.");
+                continue;
+            }
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Помилка: потрібно ввести ціле число.");
+            }
+        }
+    }
+
+    /**
+     * Створює новий об'єкт одягу та додає його до списку.
+     */
+    private static void createClothes(Scanner scanner, List<Clothes> clothesList) {
+        System.out.println("\nСтворення нового об'єкта:");
+
+        int id = readPositiveInt(scanner, "Введіть id: ");
+        String name = readNonEmptyString(scanner, "Введіть назву: ");
+        String size = readNonEmptyString(scanner, "Введіть розмір: ");
+        double price = readPositiveDouble(scanner, "Введіть ціну: ");
+
+        try {
+            Clothes clothes = new Clothes(id, name, size, price);
+            clothesList.add(clothes);
+            System.out.println("Об'єкт успішно створено.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка створення об'єкта: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Виводить інформацію про всі об'єкти.
+     */
+    private static void printAllClothes(List<Clothes> clothesList) {
+        if (clothesList.isEmpty()) {
+            System.out.println("Список об'єктів порожній.");
+            return;
         }
 
-        scanner.close();
+        System.out.println("\nІнформація про всі об'єкти:");
+        for (Clothes clothes : clothesList) {
+            System.out.println(clothes);
+        }
     }
 
     /**

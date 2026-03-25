@@ -2,6 +2,8 @@
  * Клас, що описує одяг.
  */
 public class Clothes {
+    private static int objectsCount = 0;
+
     private int id;
     private String name;
     private String size;
@@ -15,6 +17,29 @@ public class Clothes {
         setName(name);
         setSize(size);
         setPrice(price);
+        objectsCount++;
+    }
+
+    /**
+     * Створює копію іншого об'єкта одягу.
+     */
+    public Clothes(Clothes other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
+        }
+
+        this.id = other.id;
+        this.name = other.name;
+        this.size = other.size;
+        this.price = other.price;
+        objectsCount++;
+    }
+
+    /**
+     * Повертає кількість створених об'єктів.
+     */
+    public static int getObjectsCount() {
+        return objectsCount;
     }
 
     /**

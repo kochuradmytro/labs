@@ -1,48 +1,93 @@
-﻿public class Clothes {
+/**
+ * Клас, що описує одяг.
+ */
+public class Clothes {
     private int id;
     private String name;
     private String size;
     private double price;
 
+    /**
+     * Створює об'єкт одягу з перевіркою коректності даних.
+     */
     public Clothes(int id, String name, String size, double price) {
-        this.id = id;
-        this.name = name;
-        this.size = size;
-        this.price = price;
+        setId(id);
+        setName(name);
+        setSize(size);
+        setPrice(price);
     }
 
+    /**
+     * Повертає ідентифікатор одягу.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Встановлює ідентифікатор одягу.
+     */
     public void setId(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("id повинен бути більше 0.");
+        }
         this.id = id;
     }
 
+    /**
+     * Повертає назву одягу.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Встановлює назву одягу.
+     */
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Назва не може бути порожньою.");
+        }
+        this.name = name.trim();
     }
 
+    /**
+     * Повертає розмір одягу.
+     */
     public String getSize() {
         return size;
     }
 
+    /**
+     * Встановлює розмір одягу.
+     */
     public void setSize(String size) {
-        this.size = size;
+        if (size == null || size.trim().isEmpty()) {
+            throw new IllegalArgumentException("Розмір не може бути порожнім.");
+        }
+        this.size = size.trim();
     }
 
+    /**
+     * Повертає ціну одягу.
+     */
     public double getPrice() {
         return price;
     }
 
+    /**
+     * Встановлює ціну одягу.
+     */
     public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("Ціна повинна бути більше 0.");
+        }
         this.price = price;
     }
 
+    /**
+     * Повертає рядкове представлення об'єкта.
+     */
     @Override
     public String toString() {
         return "Clothes{" +
@@ -53,6 +98,9 @@
                 '}';
     }
 
+    /**
+     * Порівнює об'єкти на рівність.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

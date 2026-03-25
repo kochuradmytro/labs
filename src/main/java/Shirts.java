@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Клас, що описує сорочку.
  */
 public class Shirts extends Clothes {

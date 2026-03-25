@@ -16,29 +16,17 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            printMenu();
+            printMainMenu();
             int choice = readMenuChoice(scanner);
 
             switch (choice) {
                 case 1:
-                    createClothes(scanner, clothesList);
+                    createObjectMenu(scanner, clothesList);
                     break;
                 case 2:
-                    createPants(scanner, clothesList);
-                    break;
-                case 3:
-                    createShirts(scanner, clothesList);
-                    break;
-                case 4:
-                    createJeans(scanner, clothesList);
-                    break;
-                case 5:
-                    createTShirt(scanner, clothesList);
-                    break;
-                case 6:
                     printAllClothes(clothesList);
                     break;
-                case 7:
+                case 3:
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
@@ -51,17 +39,26 @@ public class Main {
     }
 
     /**
-     * Виводить консольне меню.
+     * Виводить головне меню.
      */
-    private static void printMenu() {
-        System.out.println("\nМеню:");
-        System.out.println("1. Створити об'єкт Clothes");
-        System.out.println("2. Створити об'єкт Pants");
-        System.out.println("3. Створити об'єкт Shirts");
-        System.out.println("4. Створити об'єкт Jeans");
-        System.out.println("5. Створити об'єкт TShirt");
-        System.out.println("6. Вивести інформацію про всі об'єкти");
-        System.out.println("7. Завершити роботу");
+    private static void printMainMenu() {
+        System.out.println("\nГоловне меню:");
+        System.out.println("1. Створити новий об'єкт");
+        System.out.println("2. Вивести інформацію про всі об'єкти");
+        System.out.println("3. Завершити роботу");
+    }
+
+    /**
+     * Виводить меню створення об'єкта.
+     */
+    private static void printCreateMenu() {
+        System.out.println("\nОберіть тип об'єкта для створення:");
+        System.out.println("1. Clothes");
+        System.out.println("2. Pants");
+        System.out.println("3. Shirts");
+        System.out.println("4. Jeans");
+        System.out.println("5. TShirt");
+        System.out.println("6. Повернутися до головного меню");
     }
 
     /**
@@ -81,6 +78,47 @@ public class Main {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
                 System.out.println("Помилка: потрібно ввести ціле число.");
+            }
+        }
+    }
+
+    /**
+     * Обробляє меню створення нового об'єкта.
+     */
+    private static void createObjectMenu(Scanner scanner, ArrayList<Clothes> clothesList) {
+        boolean creating = true;
+
+        while (creating) {
+            printCreateMenu();
+            int choice = readMenuChoice(scanner);
+
+            switch (choice) {
+                case 1:
+                    createClothes(scanner, clothesList);
+                    creating = false;
+                    break;
+                case 2:
+                    createPants(scanner, clothesList);
+                    creating = false;
+                    break;
+                case 3:
+                    createShirts(scanner, clothesList);
+                    creating = false;
+                    break;
+                case 4:
+                    createJeans(scanner, clothesList);
+                    creating = false;
+                    break;
+                case 5:
+                    createTShirt(scanner, clothesList);
+                    creating = false;
+                    break;
+                case 6:
+                    System.out.println("Повернення до головного меню.");
+                    creating = false;
+                    break;
+                default:
+                    System.out.println("Помилка: такого пункту меню не існує.");
             }
         }
     }

@@ -12,6 +12,7 @@ import java.io.IOException;
 public class Main {
 
     private static final String FILE_NAME = "input.txt";
+
     /**
      * Точка входу в програму.
      */
@@ -35,6 +36,9 @@ public class Main {
                     printAllClothes(clothesList);
                     break;
                 case 3:
+                    searchMenu(scanner, clothesList);
+                    break;
+                case 4:
                     saveToFile(clothesList);
                     System.out.println("Роботу програми завершено.");
                     running = false;
@@ -45,6 +49,116 @@ public class Main {
         }
 
         scanner.close();
+    }
+
+
+    /**
+     * Виводить підменю пошуку.
+     */
+    private static void printSearchMenu() {
+        System.out.println("\nПошук об'єкта:");
+        System.out.println("1. Пошук за іменем");
+        System.out.println("2. Пошук за ціною");
+        System.out.println("3. Пошук за розміром");
+        System.out.println("4. Повернутися до головного меню");
+    }
+
+    /**
+     * Обробляє підменю пошуку об'єктів.
+     */
+    private static void searchMenu(Scanner scanner, ArrayList<Clothes> clothesList) {
+        boolean searching = true;
+
+        while (searching) {
+            printSearchMenu();
+            int choice = readMenuChoice(scanner);
+
+            switch (choice) {
+                case 1:
+                    searchByName(scanner, clothesList);
+                    break;
+                case 2:
+                    searchByPrice(scanner, clothesList);
+                    break;
+                case 3:
+                    searchBySize(scanner, clothesList);
+                    break;
+                case 4:
+                    System.out.println("Повернення до головного меню.");
+                    searching = false;
+                    break;
+                default:
+                    System.out.println("Помилка: такого пункту меню не існує.");
+            }
+        }
+    }
+
+    /**
+     * Виконує пошук об'єктів за іменем.
+     */
+    private static void searchByName(Scanner scanner, ArrayList<Clothes> clothesList) {
+        ArrayList<Clothes> foundList = new ArrayList<Clothes>();
+        String name = readNonEmptyString(scanner, "Введіть ім'я для пошуку: ");
+        int i;
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).getName().equalsIgnoreCase(name)) {
+                foundList.add(clothesList.get(i));
+            }
+        }
+
+        printSearchResults(foundList);
+    }
+
+    /**
+     * Виконує пошук об'єктів за розміром.
+     */
+    private static void searchBySize(Scanner scanner, ArrayList<Clothes> clothesList) {
+        ArrayList<Clothes> foundList = new ArrayList<Clothes>();
+        String size = readNonEmptyString(scanner, "Введіть розмір для пошуку: ");
+        int i;
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).getSize().equalsIgnoreCase(size)) {
+                foundList.add(clothesList.get(i));
+            }
+        }
+
+        printSearchResults(foundList);
+    }
+
+    /**
+     * Виконує пошук об'єктів за ціною.
+     */
+    private static void searchByPrice(Scanner scanner, ArrayList<Clothes> clothesList) {
+        ArrayList<Clothes> foundList = new ArrayList<Clothes>();
+        double price = readPositiveDouble(scanner, "Введіть ціну для пошуку: ");
+        int i;
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).getPrice() == price) {
+                foundList.add(clothesList.get(i));
+            }
+        }
+
+        printSearchResults(foundList);
+    }
+
+    /**
+     * Виводить результати пошуку.
+     */
+    private static void printSearchResults(ArrayList<Clothes> foundList) {
+        int i;
+
+        if (foundList.isEmpty()) {
+            System.out.println("Жоден об'єкт не відповідає умовам пошуку.");
+            return;
+        }
+
+        System.out.println("\nЗнайдені об'єкти:");
+        for (i = 0; i < foundList.size(); i++) {
+            System.out.println(foundList.get(i));
+        }
     }
 
     /**
@@ -316,7 +430,8 @@ public class Main {
         System.out.println("\nГоловне меню:");
         System.out.println("1. Створити новий об'єкт");
         System.out.println("2. Вивести інформацію про всі об'єкти");
-        System.out.println("3. Завершити роботу");
+        System.out.println("3. Пошук об'єкта");
+        System.out.println("4. Завершити роботу");
     }
 
     /**

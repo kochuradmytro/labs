@@ -1,9 +1,8 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
- * Клас для запуску програми та керування списком одягу через консольне меню.
+ * Клас для запуску програми та керування колекцією одягу через консольне меню.
  */
 public class Main {
 
@@ -12,7 +11,7 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Clothes> clothesList = new ArrayList<Clothes>();
+        ArrayList<Clothes> clothesList = new ArrayList<Clothes>();
 
         boolean running = true;
 
@@ -25,12 +24,15 @@ public class Main {
                     createClothes(scanner, clothesList);
                     break;
                 case 2:
-                    printAllClothes(clothesList);
+                    createPants(scanner, clothesList);
                     break;
                 case 3:
-                    printObjectsCount();
+                    createShirts(scanner, clothesList);
                     break;
                 case 4:
+                    printAllClothes(clothesList);
+                    break;
+                case 5:
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
@@ -47,10 +49,11 @@ public class Main {
      */
     private static void printMenu() {
         System.out.println("\nМеню:");
-        System.out.println("1. Створити новий об’єкт");
-        System.out.println("2. Вивести інформацію про всі об’єкти");
-        System.out.println("3. Вивести кількість створених об’єктів");
-        System.out.println("4. Завершити роботу");
+        System.out.println("1. Створити об'єкт Clothes");
+        System.out.println("2. Створити об'єкт Pants");
+        System.out.println("3. Створити об'єкт Shirts");
+        System.out.println("4. Вивести інформацію про всі об'єкти");
+        System.out.println("5. Завершити роботу");
     }
 
     /**
@@ -75,10 +78,10 @@ public class Main {
     }
 
     /**
-     * Створює новий об'єкт одягу та додає його до списку.
+     * Створює об'єкт базового класу Clothes.
      */
-    private static void createClothes(Scanner scanner, List<Clothes> clothesList) {
-        System.out.println("\nСтворення нового об'єкта:");
+    private static void createClothes(Scanner scanner, ArrayList<Clothes> clothesList) {
+        System.out.println("\nСтворення об'єкта Clothes:");
 
         int id = readPositiveInt(scanner, "Введіть id: ");
         String name = readNonEmptyString(scanner, "Введіть назву: ");
@@ -88,16 +91,58 @@ public class Main {
         try {
             Clothes clothes = new Clothes(id, name, size, price);
             clothesList.add(clothes);
-            System.out.println("Об'єкт успішно створено.");
+            System.out.println("Об'єкт Clothes успішно створено.");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
     }
 
     /**
-     * Виводить інформацію про всі об'єкти.
+     * Створює об'єкт похідного класу Pants.
      */
-    private static void printAllClothes(List<Clothes> clothesList) {
+    private static void createPants(Scanner scanner, ArrayList<Clothes> clothesList) {
+        System.out.println("\nСтворення об'єкта Pants:");
+
+        int id = readPositiveInt(scanner, "Введіть id: ");
+        String name = readNonEmptyString(scanner, "Введіть назву: ");
+        String size = readNonEmptyString(scanner, "Введіть розмір: ");
+        double price = readPositiveDouble(scanner, "Введіть ціну: ");
+        String material = readNonEmptyString(scanner, "Введіть матеріал: ");
+
+        try {
+            Clothes pants = new Pants(id, name, size, price, material);
+            clothesList.add(pants);
+            System.out.println("Об'єкт Pants успішно створено.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка створення об'єкта: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Створює об'єкт похідного класу Shirts.
+     */
+    private static void createShirts(Scanner scanner, ArrayList<Clothes> clothesList) {
+        System.out.println("\nСтворення об'єкта Shirts:");
+
+        int id = readPositiveInt(scanner, "Введіть id: ");
+        String name = readNonEmptyString(scanner, "Введіть назву: ");
+        String size = readNonEmptyString(scanner, "Введіть розмір: ");
+        double price = readPositiveDouble(scanner, "Введіть ціну: ");
+        String sleeveType = readNonEmptyString(scanner, "Введіть тип рукава: ");
+
+        try {
+            Clothes shirt = new Shirts(id, name, size, price, sleeveType);
+            clothesList.add(shirt);
+            System.out.println("Об'єкт Shirts успішно створено.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка створення об'єкта: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Виводить інформацію про всі об'єкти колекції.
+     */
+    private static void printAllClothes(ArrayList<Clothes> clothesList) {
         int i;
 
         if (clothesList.isEmpty()) {
@@ -109,13 +154,6 @@ public class Main {
         for (i = 0; i < clothesList.size(); i++) {
             System.out.println(clothesList.get(i));
         }
-    }
-
-    /**
-     * Виводить кількість створених об'єктів.
-     */
-    private static void printObjectsCount() {
-        System.out.println("Кількість створених об'єктів: " + Clothes.getObjectsCount());
     }
 
     /**

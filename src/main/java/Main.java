@@ -93,28 +93,13 @@ public class Main {
 
         switch (choice) {
             case 1:
-                comparator = new Comparator<Clothes>() {
-                    @Override
-                    public int compare(Clothes o1, Clothes o2) {
-                        return o1.getName().compareToIgnoreCase(o2.getName());
-                    }
-                };
+                comparator = (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName());
                 break;
             case 2:
-                comparator = new Comparator<Clothes>() {
-                    @Override
-                    public int compare(Clothes o1, Clothes o2) {
-                        return Double.compare(o1.getPrice(), o2.getPrice());
-                    }
-                };
+                comparator = (o1, o2) -> Double.compare(o1.getPrice(), o2.getPrice());
                 break;
             case 3:
-                comparator = new Comparator<Clothes>() {
-                    @Override
-                    public int compare(Clothes o1, Clothes o2) {
-                        return o1.getSize().compareToIgnoreCase(o2.getSize());
-                    }
-                };
+                comparator = (o1, o2) -> o1.getSize().compareToIgnoreCase(o2.getSize());
                 break;
             case 0:
                 System.out.println("Повернення в головне меню.");

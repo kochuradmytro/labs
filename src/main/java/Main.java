@@ -18,9 +18,9 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Clothes> clothesList = new ArrayList<Clothes>();
+        Store store = new Store("Clothes Store");
 
-        loadFromFile(clothesList);
+        loadFromFile(store);
 
         boolean running = true;
 
@@ -30,16 +30,16 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    createObjectMenu(scanner, clothesList);
+                    createObjectMenu(scanner, store);
                     break;
                 case 2:
-                    printAllClothes(clothesList);
+                    printAllClothes(store);
                     break;
                 case 3:
-                    searchMenu(scanner, clothesList);
+                    searchMenu(scanner, store);
                     break;
                 case 4:
-                    saveToFile(clothesList);
+                    saveToFile(store);
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
@@ -66,7 +66,7 @@ public class Main {
     /**
      * Обробляє підменю пошуку об'єктів.
      */
-    private static void searchMenu(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void searchMenu(Scanner scanner, Store store) {
         boolean searching = true;
 
         while (searching) {
@@ -75,13 +75,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    searchByName(scanner, clothesList);
+                    searchByName(scanner, store);
                     break;
                 case 2:
-                    searchByPrice(scanner, clothesList);
+                    searchByPrice(scanner, store);
                     break;
                 case 3:
-                    searchBySize(scanner, clothesList);
+                    searchBySize(scanner, store);
                     break;
                 case 4:
                     System.out.println("Повернення до головного меню.");
@@ -96,58 +96,40 @@ public class Main {
     /**
      * Виконує пошук об'єктів за іменем.
      */
-    private static void searchByName(Scanner scanner, ArrayList<Clothes> clothesList) {
-        ArrayList<Clothes> foundList = new ArrayList<Clothes>();
+    private static void searchByName(Scanner scanner, Store store) {
+        ArrayList<Clothes> foundList;
         String name = readNonEmptyString(scanner, "Введіть ім'я для пошуку: ");
-        int i;
 
-        for (i = 0; i < clothesList.size(); i++) {
-            if (clothesList.get(i).getName().equalsIgnoreCase(name)) {
-                foundList.add(clothesList.get(i));
-            }
-        }
-
-        printSearchResults(foundList);
+        foundList = store.searchByName(name);
+        printSearchResults(foundList, store);
     }
 
     /**
      * Виконує пошук об'єктів за розміром.
      */
-    private static void searchBySize(Scanner scanner, ArrayList<Clothes> clothesList) {
-        ArrayList<Clothes> foundList = new ArrayList<Clothes>();
+    private static void searchBySize(Scanner scanner, Store store) {
+        ArrayList<Clothes> foundList;
         String size = readNonEmptyString(scanner, "Введіть розмір для пошуку: ");
-        int i;
 
-        for (i = 0; i < clothesList.size(); i++) {
-            if (clothesList.get(i).getSize().equalsIgnoreCase(size)) {
-                foundList.add(clothesList.get(i));
-            }
-        }
-
-        printSearchResults(foundList);
+        foundList = store.searchBySize(size);
+        printSearchResults(foundList, store);
     }
 
     /**
      * Виконує пошук об'єктів за ціною.
      */
-    private static void searchByPrice(Scanner scanner, ArrayList<Clothes> clothesList) {
-        ArrayList<Clothes> foundList = new ArrayList<Clothes>();
+    private static void searchByPrice(Scanner scanner, Store store) {
+        ArrayList<Clothes> foundList;
         double price = readPositiveDouble(scanner, "Введіть ціну для пошуку: ");
-        int i;
 
-        for (i = 0; i < clothesList.size(); i++) {
-            if (clothesList.get(i).getPrice() == price) {
-                foundList.add(clothesList.get(i));
-            }
-        }
-
-        printSearchResults(foundList);
+        foundList = store.searchByPrice(price);
+        printSearchResults(foundList, store);
     }
 
     /**
      * Виводить результати пошуку.
      */
-    private static void printSearchResults(ArrayList<Clothes> foundList) {
+    private static void printSearchResults(ArrayList<Clothes> foundList, Store store) {
         int i;
 
         if (foundList.isEmpty()) {
@@ -157,14 +139,14 @@ public class Main {
 
         System.out.println("\nЗнайдені об'єкти:");
         for (i = 0; i < foundList.size(); i++) {
-            System.out.println(foundList.get(i));
+            System.out.println(foundList.get(i) + ", quantity=" + store.getQuantityForClothes(foundList.get(i)));
         }
     }
 
     /**
-     * Зчитує об'єкти з файлу та додає їх до колекції.
+     * Зчитує об'єкти з файлу та додає їх до магазину.
      */
-    private static void loadFromFile(ArrayList<Clothes> clothesList) {
+    private static void loadFromFile(Store store) {
         BufferedReader reader = null;
         String line;
         int lineNumber = 0;
@@ -180,10 +162,7 @@ public class Main {
                 }
 
                 try {
-                    Clothes clothes = parseClothes(line);
-                    if (clothes != null) {
-                        clothesList.add(clothes);
-                    }
+                    addFromFileLine(store, line);
                 } catch (IllegalArgumentException e) {
                     System.out.println("Помилка в рядку " + lineNumber + ": " + e.getMessage());
                 }
@@ -202,17 +181,44 @@ public class Main {
     }
 
     /**
-     * Записує всі об'єкти з колекції у файл.
+     * Створює об'єкт з рядка файлу та додає його до магазину.
      */
-    private static void saveToFile(ArrayList<Clothes> clothesList) {
+    private static void addFromFileLine(Store store, String line) {
+        String[] parts = line.split(";");
+        Clothes clothes;
+        int quantity;
+
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Недостатньо даних у рядку.");
+        }
+
+        try {
+            quantity = Integer.parseInt(parts[parts.length - 1].trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Некоректна кількість товару у файлі.");
+        }
+
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Кількість товару повинна бути більше 0.");
+        }
+
+        clothes = parseClothes(line);
+        store.addNewClothes(clothes, quantity);
+    }
+
+    /**
+     * Записує всі об'єкти з магазину у файл.
+     */
+    private static void saveToFile(Store store) {
         BufferedWriter writer = null;
+        ArrayList<Clothes> clothesList = store.getClothesList();
         int i;
 
         try {
             writer = new BufferedWriter(new FileWriter(FILE_NAME));
 
             for (i = 0; i < clothesList.size(); i++) {
-                writer.write(toFileString(clothesList.get(i)));
+                writer.write(toFileString(clothesList.get(i), store.getQuantity(i)));
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -242,7 +248,7 @@ public class Main {
         }
 
         if (parts[0].equals("Clothes")) {
-            if (parts.length != 5) {
+            if (parts.length != 5 && parts.length != 6) {
                 throw new IllegalArgumentException("Некоректна кількість полів для Clothes.");
             }
 
@@ -253,16 +259,11 @@ public class Main {
                 throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
             }
 
-            return new Clothes(
-                    id,
-                    parts[2].trim(),
-                    parts[3].trim(),
-                    price
-            );
+            return new Clothes(id, parts[2].trim(), parts[3].trim(), price);
         }
 
         if (parts[0].equals("Pants")) {
-            if (parts.length != 6) {
+            if (parts.length != 6 && parts.length != 7) {
                 throw new IllegalArgumentException("Некоректна кількість полів для Pants.");
             }
 
@@ -273,17 +274,11 @@ public class Main {
                 throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
             }
 
-            return new Pants(
-                    id,
-                    parts[2].trim(),
-                    parts[3].trim(),
-                    price,
-                    parts[5].trim()
-            );
+            return new Pants(id, parts[2].trim(), parts[3].trim(), price, parts[5].trim());
         }
 
         if (parts[0].equals("Shirts")) {
-            if (parts.length != 6) {
+            if (parts.length != 6 && parts.length != 7) {
                 throw new IllegalArgumentException("Некоректна кількість полів для Shirts.");
             }
 
@@ -294,17 +289,11 @@ public class Main {
                 throw new IllegalArgumentException("Некоректний числовий формат у файлі.");
             }
 
-            return new Shirts(
-                    id,
-                    parts[2].trim(),
-                    parts[3].trim(),
-                    price,
-                    parts[5].trim()
-            );
+            return new Shirts(id, parts[2].trim(), parts[3].trim(), price, parts[5].trim());
         }
 
         if (parts[0].equals("Jeans")) {
-            if (parts.length != 8) {
+            if (parts.length != 8 && parts.length != 9) {
                 throw new IllegalArgumentException("Некоректна кількість полів для Jeans.");
             }
 
@@ -323,19 +312,11 @@ public class Main {
                 throw new IllegalArgumentException("Некоректне логічне значення у файлі.");
             }
 
-            return new Jeans(
-                    id,
-                    parts[2].trim(),
-                    parts[3].trim(),
-                    price,
-                    parts[5].trim(),
-                    parts[6].trim(),
-                    booleanValue
-            );
+            return new Jeans(id, parts[2].trim(), parts[3].trim(), price, parts[5].trim(), parts[6].trim(), booleanValue);
         }
 
         if (parts[0].equals("TShirt")) {
-            if (parts.length != 8) {
+            if (parts.length != 8 && parts.length != 9) {
                 throw new IllegalArgumentException("Некоректна кількість полів для TShirt.");
             }
 
@@ -354,15 +335,7 @@ public class Main {
                 throw new IllegalArgumentException("Некоректне логічне значення у файлі.");
             }
 
-            return new TShirt(
-                    id,
-                    parts[2].trim(),
-                    parts[3].trim(),
-                    price,
-                    parts[5].trim(),
-                    parts[6].trim(),
-                    booleanValue
-            );
+            return new TShirt(id, parts[2].trim(), parts[3].trim(), price, parts[5].trim(), parts[6].trim(), booleanValue);
         }
 
         throw new IllegalArgumentException("Невідомий тип об'єкта: " + parts[0]);
@@ -371,7 +344,7 @@ public class Main {
     /**
      * Перетворює об'єкт у рядок для запису у файл.
      */
-    private static String toFileString(Clothes clothes) {
+    private static String toFileString(Clothes clothes, int quantity) {
         if (clothes instanceof Jeans) {
             Jeans jeans = (Jeans) clothes;
             return "Jeans;" +
@@ -381,7 +354,8 @@ public class Main {
                     jeans.getPrice() + ";" +
                     jeans.getMaterial() + ";" +
                     jeans.getFitType() + ";" +
-                    jeans.isRipped();
+                    jeans.isRipped() + ";" +
+                    quantity;
         }
 
         if (clothes instanceof TShirt) {
@@ -393,7 +367,8 @@ public class Main {
                     tShirt.getPrice() + ";" +
                     tShirt.getSleeveType() + ";" +
                     tShirt.getPrintType() + ";" +
-                    tShirt.isSportsStyle();
+                    tShirt.isSportsStyle() + ";" +
+                    quantity;
         }
 
         if (clothes instanceof Pants) {
@@ -403,7 +378,8 @@ public class Main {
                     pants.getName() + ";" +
                     pants.getSize() + ";" +
                     pants.getPrice() + ";" +
-                    pants.getMaterial();
+                    pants.getMaterial() + ";" +
+                    quantity;
         }
 
         if (clothes instanceof Shirts) {
@@ -413,14 +389,16 @@ public class Main {
                     shirt.getName() + ";" +
                     shirt.getSize() + ";" +
                     shirt.getPrice() + ";" +
-                    shirt.getSleeveType();
+                    shirt.getSleeveType() + ";" +
+                    quantity;
         }
 
         return "Clothes;" +
                 clothes.getId() + ";" +
                 clothes.getName() + ";" +
                 clothes.getSize() + ";" +
-                clothes.getPrice();
+                clothes.getPrice() + ";" +
+                quantity;
     }
 
     /**
@@ -471,7 +449,7 @@ public class Main {
     /**
      * Обробляє меню створення нового об'єкта.
      */
-    private static void createObjectMenu(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void createObjectMenu(Scanner scanner, Store store) {
         boolean creating = true;
 
         while (creating) {
@@ -480,23 +458,23 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    createClothes(scanner, clothesList);
+                    createClothes(scanner, store);
                     creating = false;
                     break;
                 case 2:
-                    createPants(scanner, clothesList);
+                    createPants(scanner, store);
                     creating = false;
                     break;
                 case 3:
-                    createShirts(scanner, clothesList);
+                    createShirts(scanner, store);
                     creating = false;
                     break;
                 case 4:
-                    createJeans(scanner, clothesList);
+                    createJeans(scanner, store);
                     creating = false;
                     break;
                 case 5:
-                    createTShirt(scanner, clothesList);
+                    createTShirt(scanner, store);
                     creating = false;
                     break;
                 case 6:
@@ -512,18 +490,19 @@ public class Main {
     /**
      * Створює об'єкт базового класу Clothes.
      */
-    private static void createClothes(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void createClothes(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Clothes:");
 
         int id = readPositiveInt(scanner, "Введіть id: ");
         String name = readNonEmptyString(scanner, "Введіть назву: ");
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
+        int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
             Clothes clothes = new Clothes(id, name, size, price);
-            clothesList.add(clothes);
-            System.out.println("Об'єкт Clothes успішно створено.");
+            store.addNewClothes(clothes, quantity);
+            System.out.println("Об'єкт Clothes успішно додано.");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
@@ -532,7 +511,7 @@ public class Main {
     /**
      * Створює об'єкт класу Pants.
      */
-    private static void createPants(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void createPants(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Pants:");
 
         int id = readPositiveInt(scanner, "Введіть id: ");
@@ -540,11 +519,12 @@ public class Main {
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
         String material = readNonEmptyString(scanner, "Введіть матеріал: ");
+        int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
             Clothes pants = new Pants(id, name, size, price, material);
-            clothesList.add(pants);
-            System.out.println("Об'єкт Pants успішно створено.");
+            store.addNewClothes(pants, quantity);
+            System.out.println("Об'єкт Pants успішно додано.");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
@@ -553,7 +533,7 @@ public class Main {
     /**
      * Створює об'єкт класу Shirts.
      */
-    private static void createShirts(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void createShirts(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Shirts:");
 
         int id = readPositiveInt(scanner, "Введіть id: ");
@@ -561,11 +541,12 @@ public class Main {
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
         String sleeveType = readNonEmptyString(scanner, "Введіть тип рукава: ");
+        int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
             Clothes shirt = new Shirts(id, name, size, price, sleeveType);
-            clothesList.add(shirt);
-            System.out.println("Об'єкт Shirts успішно створено.");
+            store.addNewClothes(shirt, quantity);
+            System.out.println("Об'єкт Shirts успішно додано.");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
@@ -574,7 +555,7 @@ public class Main {
     /**
      * Створює об'єкт класу Jeans.
      */
-    private static void createJeans(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void createJeans(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Jeans:");
 
         int id = readPositiveInt(scanner, "Введіть id: ");
@@ -584,11 +565,12 @@ public class Main {
         String material = readNonEmptyString(scanner, "Введіть матеріал: ");
         String fitType = readNonEmptyString(scanner, "Введіть тип крою: ");
         boolean ripped = readBoolean(scanner, "Є розриви? (true/false): ");
+        int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
             Clothes jeans = new Jeans(id, name, size, price, material, fitType, ripped);
-            clothesList.add(jeans);
-            System.out.println("Об'єкт Jeans успішно створено.");
+            store.addNewClothes(jeans, quantity);
+            System.out.println("Об'єкт Jeans успішно додано.");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
@@ -597,7 +579,7 @@ public class Main {
     /**
      * Створює об'єкт класу TShirt.
      */
-    private static void createTShirt(Scanner scanner, ArrayList<Clothes> clothesList) {
+    private static void createTShirt(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта TShirt:");
 
         int id = readPositiveInt(scanner, "Введіть id: ");
@@ -607,11 +589,12 @@ public class Main {
         String sleeveType = readNonEmptyString(scanner, "Введіть тип рукава: ");
         String printType = readNonEmptyString(scanner, "Введіть тип принта: ");
         boolean sportsStyle = readBoolean(scanner, "Спортивний стиль? (true/false): ");
+        int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
             Clothes tShirt = new TShirt(id, name, size, price, sleeveType, printType, sportsStyle);
-            clothesList.add(tShirt);
-            System.out.println("Об'єкт TShirt успішно створено.");
+            store.addNewClothes(tShirt, quantity);
+            System.out.println("Об'єкт TShirt успішно додано.");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
@@ -620,7 +603,8 @@ public class Main {
     /**
      * Виводить інформацію про всі об'єкти колекції.
      */
-    private static void printAllClothes(ArrayList<Clothes> clothesList) {
+    private static void printAllClothes(Store store) {
+        ArrayList<Clothes> clothesList = store.getClothesList();
         int i;
 
         if (clothesList.isEmpty()) {
@@ -630,7 +614,7 @@ public class Main {
 
         System.out.println("\nІнформація про всі об'єкти:");
         for (i = 0; i < clothesList.size(); i++) {
-            System.out.println(clothesList.get(i));
+            System.out.println(clothesList.get(i) + ", quantity=" + store.getQuantity(i));
         }
     }
 

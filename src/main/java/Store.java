@@ -1,4 +1,4 @@
-﻿import java.util.ArrayList;
+import java.util.ArrayList;
 
 /**
  * Клас, що описує магазин одягу.

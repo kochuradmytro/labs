@@ -1,1 +1,1 @@
-Pants;100;Pants;100;100.0;Material
+Clothes;1;Clothes;100;100.0;100

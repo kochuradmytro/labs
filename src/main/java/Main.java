@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -40,6 +41,9 @@ public class Main {
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
+                case 4:
+                    printSortedClothes(databaseManager);
+                    break;
                 default:
                     System.out.println("Помилка: такого пункту меню не існує.");
             }
@@ -55,6 +59,27 @@ public class Main {
         System.out.println("\nГоловне меню:");
         System.out.println("1. Створити новий об'єкт");
         System.out.println("2. Завершити роботу");
+        System.out.println("4. Вивести відсортовану інформацію про всі об'єкти");
+    }
+
+    /**
+     * Зчитує всі об'єкти з бази даних, сортує їх і виводить у консоль.
+     */
+    private static void printSortedClothes(DatabaseManager databaseManager) {
+        ArrayList<Clothes> clothesList = databaseManager.getAllClothes();
+        int i;
+
+        if (clothesList.isEmpty()) {
+            System.out.println("У базі даних немає об'єктів.");
+            return;
+        }
+
+        clothesList.sort(null);
+
+        System.out.println("\nВідсортована інформація про всі об'єкти:");
+        for (i = 0; i < clothesList.size(); i++) {
+            System.out.println(clothesList.get(i));
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /**
  * Базовий клас, що описує одяг.
  */
-public abstract class Clothes {
+public abstract class Clothes implements Comparable<Clothes> {
     private int id;
     private String name;
     private String size;
@@ -134,4 +134,12 @@ public abstract class Clothes {
     }
 
     public abstract String getType();
+
+    /**
+     * Порівнює об'єкти одягу за назвою.
+     */
+    @Override
+    public int compareTo(Clothes other) {
+        return this.name.compareToIgnoreCase(other.name);
+    }
 }

@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Клас для роботи з базою даних.
@@ -136,5 +139,96 @@ public class DatabaseManager {
                 }
             }
         }
+    }
+
+    /**
+     * Повертає список усіх об'єктів з бази даних.
+     */
+    public ArrayList<Clothes> getAllClothes() {
+        String sql = "SELECT * FROM clothes_store";
+        ArrayList<Clothes> clothesList = new ArrayList<Clothes>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String type = resultSet.getString("type");
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String size = resultSet.getString("size");
+                double price = resultSet.getDouble("price");
+
+                if (type.equals("Pants")) {
+                    clothesList.add(new Pants(
+                            id,
+                            name,
+                            size,
+                            price,
+                            resultSet.getString("material")
+                    ));
+                } else if (type.equals("Shirts")) {
+                    clothesList.add(new Shirts(
+                            id,
+                            name,
+                            size,
+                            price,
+                            resultSet.getString("sleeve_type")
+                    ));
+                } else if (type.equals("Jeans")) {
+                    clothesList.add(new Jeans(
+                            id,
+                            name,
+                            size,
+                            price,
+                            resultSet.getString("material"),
+                            resultSet.getString("fit_type"),
+                            resultSet.getBoolean("ripped")
+                    ));
+                } else if (type.equals("TShirt")) {
+                    clothesList.add(new TShirt(
+                            id,
+                            name,
+                            size,
+                            price,
+                            resultSet.getString("sleeve_type"),
+                            resultSet.getString("print_type"),
+                            resultSet.getBoolean("sports_style")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Помилка SQL під час зчитування об'єктів: " + e.getMessage());
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    System.out.println("Помилка закриття ResultSet.");
+                }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println("Помилка закриття PreparedStatement.");
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Помилка закриття з'єднання з базою даних.");
+                }
+            }
+        }
+
+        return clothesList;
     }
 }

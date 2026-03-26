@@ -42,4 +42,9 @@ public class Pants extends Clothes {
                 ", material='" + material + '\'' +
                 '}';
     }
+
+    @Override
+    public String getType() {
+        return "Pants";
+    }
 }

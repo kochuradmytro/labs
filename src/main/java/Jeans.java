@@ -60,4 +60,9 @@ public class Jeans extends Pants {
                 ", ripped=" + ripped +
                 '}';
     }
+
+    @Override
+    public String getType() {
+        return "Jeans";
+    }
 }

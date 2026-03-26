@@ -42,4 +42,10 @@ public class Shirts extends Clothes {
                 ", sleeveType='" + sleeveType + '\'' +
                 '}';
     }
+
+
+    @Override
+    public String getType() {
+        return "Shirts";
+    }
 }

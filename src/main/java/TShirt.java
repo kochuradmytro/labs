@@ -60,4 +60,10 @@ public class TShirt extends Shirts {
                 ", sportsStyle=" + sportsStyle +
                 '}';
     }
+
+
+    @Override
+    public String getType() {
+        return "TShirt";
+    }
 }

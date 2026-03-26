@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Comparator;
 
 /**
  * Клас для запуску програми та керування колекцією одягу через консольне меню.
@@ -42,7 +43,7 @@ public class Main {
                     running = false;
                     break;
                 case 4:
-                    printSortedClothes(databaseManager);
+                    sortMenu(scanner, databaseManager);
                     break;
                 default:
                     System.out.println("Помилка: такого пункту меню не існує.");
@@ -63,10 +64,23 @@ public class Main {
     }
 
     /**
-     * Зчитує всі об'єкти з бази даних, сортує їх і виводить у консоль.
+     * Виводить підменю вибору критерію сортування.
      */
-    private static void printSortedClothes(DatabaseManager databaseManager) {
+    private static void printSortMenu() {
+        System.out.println("\nОберіть критерій сортування:");
+        System.out.println("1. Сортувати за назвою");
+        System.out.println("2. Сортувати за ціною");
+        System.out.println("3. Сортувати за розміром");
+        System.out.println("0. Повернутися в головне меню");
+    }
+
+    /**
+     * Обробляє підменю сортування об'єктів.
+     */
+    private static void sortMenu(Scanner scanner, DatabaseManager databaseManager) {
         ArrayList<Clothes> clothesList = databaseManager.getAllClothes();
+        Comparator<Clothes> comparator = null;
+        int choice;
         int i;
 
         if (clothesList.isEmpty()) {
@@ -74,7 +88,43 @@ public class Main {
             return;
         }
 
-        clothesList.sort(null);
+        printSortMenu();
+        choice = readMenuChoice(scanner);
+
+        switch (choice) {
+            case 1:
+                comparator = new Comparator<Clothes>() {
+                    @Override
+                    public int compare(Clothes o1, Clothes o2) {
+                        return o1.getName().compareToIgnoreCase(o2.getName());
+                    }
+                };
+                break;
+            case 2:
+                comparator = new Comparator<Clothes>() {
+                    @Override
+                    public int compare(Clothes o1, Clothes o2) {
+                        return Double.compare(o1.getPrice(), o2.getPrice());
+                    }
+                };
+                break;
+            case 3:
+                comparator = new Comparator<Clothes>() {
+                    @Override
+                    public int compare(Clothes o1, Clothes o2) {
+                        return o1.getSize().compareToIgnoreCase(o2.getSize());
+                    }
+                };
+                break;
+            case 0:
+                System.out.println("Повернення в головне меню.");
+                return;
+            default:
+                System.out.println("Помилка: такого пункту меню не існує.");
+                return;
+        }
+
+        clothesList.sort(comparator);
 
         System.out.println("\nВідсортована інформація про всі об'єкти:");
         for (i = 0; i < clothesList.size(); i++) {

@@ -13,14 +13,14 @@ public class Shirts extends Clothes {
     }
 
     /**
-     * Повертає тип рукава сорочки.
+     * Повертає тип рукава.
      */
     public String getSleeveType() {
         return sleeveType;
     }
 
     /**
-     * Встановлює тип рукава сорочки.
+     * Встановлює тип рукава.
      */
     public void setSleeveType(String sleeveType) {
         if (sleeveType == null || sleeveType.trim().isEmpty()) {
@@ -30,12 +30,21 @@ public class Shirts extends Clothes {
     }
 
     /**
+     * Повертає дискримінатор типу об'єкта.
+     */
+    @Override
+    public String getType() {
+        return "Shirts";
+    }
+
+    /**
      * Повертає рядкове представлення об'єкта.
      */
     @Override
     public String toString() {
         return "Shirts{" +
-                "id=" + getId() +
+                "uuid=" + getUuid() +
+                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

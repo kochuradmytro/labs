@@ -30,12 +30,21 @@ public class Pants extends Clothes {
     }
 
     /**
+     * Повертає дискримінатор типу об'єкта.
+     */
+    @Override
+    public String getType() {
+        return "Pants";
+    }
+
+    /**
      * Повертає рядкове представлення об'єкта.
      */
     @Override
     public String toString() {
         return "Pants{" +
-                "id=" + getId() +
+                "uuid=" + getUuid() +
+                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

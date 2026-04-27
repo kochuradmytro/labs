@@ -46,12 +46,21 @@ public class TShirt extends Shirts {
     }
 
     /**
+     * Повертає дискримінатор типу об'єкта.
+     */
+    @Override
+    public String getType() {
+        return "TShirt";
+    }
+
+    /**
      * Повертає рядкове представлення об'єкта.
      */
     @Override
     public String toString() {
         return "TShirt{" +
-                "id=" + getId() +
+                "uuid=" + getUuid() +
+                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

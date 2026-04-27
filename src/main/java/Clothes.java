@@ -1,16 +1,20 @@
+import java.util.UUID;
+
 /**
- * Базовий клас, що описує одяг.
+ * Абстрактний базовий клас, що описує одяг.
  */
-public class Clothes {
+public abstract class Clothes implements Comparable<Clothes>, Identifiable {
+    private UUID uuid;
     private int id;
     private String name;
     private String size;
     private double price;
 
     /**
-     * Створює об'єкт одягу з перевіркою коректності даних.
+     * Створює об'єкт одягу.
      */
     public Clothes(int id, String name, String size, double price) {
+        this.uuid = UUID.randomUUID();
         setId(id);
         setName(name);
         setSize(size);
@@ -25,10 +29,19 @@ public class Clothes {
             throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
         }
 
+        this.uuid = UUID.randomUUID();
         this.id = other.id;
         this.name = other.name;
         this.size = other.size;
         this.price = other.price;
+    }
+
+    /**
+     * Повертає UUID об'єкта.
+     */
+    @Override
+    public UUID getUuid() {
+        return uuid;
     }
 
     /**
@@ -100,12 +113,21 @@ public class Clothes {
     }
 
     /**
+     * Порівнює об'єкти одягу за назвою.
+     */
+    @Override
+    public int compareTo(Clothes other) {
+        return this.name.compareToIgnoreCase(other.name);
+    }
+
+    /**
      * Повертає рядкове представлення об'єкта.
      */
     @Override
     public String toString() {
         return "Clothes{" +
-                "id=" + id +
+                "uuid=" + uuid +
+                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
@@ -132,4 +154,9 @@ public class Clothes {
                 name.equals(clothes.name) &&
                 size.equals(clothes.size);
     }
+
+    /**
+     * Повертає дискримінатор типу об'єкта.
+     */
+    public abstract String getType();
 }

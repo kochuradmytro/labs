@@ -32,9 +32,12 @@ public class Main {
                     modifyObject(scanner, store);
                     break;
                 case 4:
-                    sortMenu(scanner, store);
+                    deleteObject(scanner, store);
                     break;
                 case 5:
+                    sortMenu(scanner, store);
+                    break;
+                case 6:
                     System.out.println("Роботу програми завершено.");
                     running = false;
                     break;
@@ -45,6 +48,7 @@ public class Main {
 
         scanner.close();
     }
+
     /**
      * Виводить головне меню.
      */
@@ -53,8 +57,9 @@ public class Main {
         System.out.println("1. Створити новий об'єкт");
         System.out.println("2. Пошук об'єкта за UUID");
         System.out.println("3. Модифікувати об'єкт");
-        System.out.println("4. Вивести відсортовану інформацію про всі об'єкти");
-        System.out.println("5. Завершити роботу");
+        System.out.println("4. Видалити об'єкт");
+        System.out.println("5. Вивести відсортовану інформацію про всі об'єкти");
+        System.out.println("6. Завершити роботу");
     }
 
     /**
@@ -78,6 +83,55 @@ public class Main {
         System.out.println("2. Сортувати за ціною");
         System.out.println("3. Сортувати за розміром");
         System.out.println("0. Повернутися в головне меню");
+    }
+
+    /**
+     * Дозволяє видалити існуючий об'єкт з колекції.
+     */
+    private static void deleteObject(Scanner scanner, Store store) {
+        ArrayList<Clothes> clothesList = store.getClothesList();
+        Clothes existingObject;
+        String confirmation;
+        int index;
+
+        if (clothesList.isEmpty()) {
+            System.out.println("Список об'єктів порожній.");
+            return;
+        }
+
+        System.out.println("\nОберіть об'єкт для видалення:");
+        for (index = 0; index < clothesList.size(); index++) {
+            System.out.println((index + 1) + ". " + clothesList.get(index));
+        }
+        System.out.println("0. Повернутися в головне меню");
+
+        index = readMenuChoice(scanner);
+
+        if (index == 0) {
+            System.out.println("Повернення в головне меню.");
+            return;
+        }
+
+        if (index < 1 || index > clothesList.size()) {
+            System.out.println("Помилка: такого об'єкта не існує.");
+            return;
+        }
+
+        existingObject = clothesList.get(index - 1);
+
+        System.out.print("Підтвердьте видалення (yes/no): ");
+        confirmation = scanner.nextLine().trim();
+
+        if (!confirmation.equalsIgnoreCase("yes")) {
+            System.out.println("Видалення скасовано.");
+            return;
+        }
+
+        if (store.delete(existingObject)) {
+            System.out.println("Об'єкт успішно видалено.");
+        } else {
+            System.out.println("Об'єкт не знайдено.");
+        }
     }
 
     /**
@@ -373,7 +427,6 @@ public class Main {
     private static void createPants(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Pants:");
 
-        int id = readPositiveInt(scanner, "Введіть id: ");
         String name = readNonEmptyString(scanner, "Введіть назву: ");
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
@@ -395,7 +448,6 @@ public class Main {
     private static void createShirts(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Shirts:");
 
-        int id = readPositiveInt(scanner, "Введіть id: ");
         String name = readNonEmptyString(scanner, "Введіть назву: ");
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
@@ -417,7 +469,6 @@ public class Main {
     private static void createJeans(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта Jeans:");
 
-        int id = readPositiveInt(scanner, "Введіть id: ");
         String name = readNonEmptyString(scanner, "Введіть назву: ");
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
@@ -441,7 +492,6 @@ public class Main {
     private static void createTShirt(Scanner scanner, Store store) {
         System.out.println("\nСтворення об'єкта TShirt:");
 
-        int id = readPositiveInt(scanner, "Введіть id: ");
         String name = readNonEmptyString(scanner, "Введіть назву: ");
         String size = readNonEmptyString(scanner, "Введіть розмір: ");
         double price = readPositiveDouble(scanner, "Введіть ціну: ");
@@ -518,28 +568,13 @@ public class Main {
 
         switch (choice) {
             case 1:
-                comparator = new Comparator<Clothes>() {
-                    @Override
-                    public int compare(Clothes o1, Clothes o2) {
-                        return o1.getName().compareToIgnoreCase(o2.getName());
-                    }
-                };
+                comparator = (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName());
                 break;
             case 2:
-                comparator = new Comparator<Clothes>() {
-                    @Override
-                    public int compare(Clothes o1, Clothes o2) {
-                        return Double.compare(o1.getPrice(), o2.getPrice());
-                    }
-                };
+                comparator = (o1, o2) -> Double.compare(o1.getPrice(), o2.getPrice());
                 break;
             case 3:
-                comparator = new Comparator<Clothes>() {
-                    @Override
-                    public int compare(Clothes o1, Clothes o2) {
-                        return o1.getSize().compareToIgnoreCase(o2.getSize());
-                    }
-                };
+                comparator = (o1, o2) -> o1.getSize().compareToIgnoreCase(o2.getSize());
                 break;
             case 0:
                 System.out.println("Повернення в головне меню.");

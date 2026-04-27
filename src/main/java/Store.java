@@ -94,6 +94,27 @@ public class Store {
     }
 
     /**
+     * Видаляє існуючий об'єкт з колекції.
+     */
+    public boolean delete(Clothes existingObject) {
+        int i;
+
+        if (existingObject == null) {
+            throw new IllegalArgumentException("Об'єкт не може бути null.");
+        }
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).equals(existingObject)) {
+                clothesList.remove(i);
+                quantities.remove(i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Повертає всі об'єкти, що відповідають вказаному імені.
      */
     public ArrayList<Clothes> searchByName(String name) {

@@ -29,11 +29,14 @@ public class Main {
                     searchByUuid(scanner, store);
                     break;
                 case 3:
-                    System.out.println("Роботу програми завершено.");
-                    running = false;
+                    modifyObject(scanner, store);
                     break;
                 case 4:
                     sortMenu(scanner, store);
+                    break;
+                case 5:
+                    System.out.println("Роботу програми завершено.");
+                    running = false;
                     break;
                 default:
                     System.out.println("Помилка: такого пункту меню не існує.");
@@ -42,7 +45,6 @@ public class Main {
 
         scanner.close();
     }
-
     /**
      * Виводить головне меню.
      */
@@ -50,8 +52,9 @@ public class Main {
         System.out.println("\nГоловне меню:");
         System.out.println("1. Створити новий об'єкт");
         System.out.println("2. Пошук об'єкта за UUID");
-        System.out.println("3. Завершити роботу");
+        System.out.println("3. Модифікувати об'єкт");
         System.out.println("4. Вивести відсортовану інформацію про всі об'єкти");
+        System.out.println("5. Завершити роботу");
     }
 
     /**
@@ -75,6 +78,235 @@ public class Main {
         System.out.println("2. Сортувати за ціною");
         System.out.println("3. Сортувати за розміром");
         System.out.println("0. Повернутися в головне меню");
+    }
+
+    /**
+     * Дозволяє модифікувати існуючий об'єкт у колекції.
+     */
+    private static void modifyObject(Scanner scanner, Store store) {
+        ArrayList<Clothes> clothesList = store.getClothesList();
+        Clothes existingObject;
+        Clothes newObject;
+        int index;
+
+        if (clothesList.isEmpty()) {
+            System.out.println("Список об'єктів порожній.");
+            return;
+        }
+
+        System.out.println("\nОберіть об'єкт для модифікації:");
+        for (index = 0; index < clothesList.size(); index++) {
+            System.out.println((index + 1) + ". " + clothesList.get(index));
+        }
+        System.out.println("0. Повернутися в головне меню");
+
+        index = readMenuChoice(scanner);
+
+        if (index == 0) {
+            System.out.println("Повернення в головне меню.");
+            return;
+        }
+
+        if (index < 1 || index > clothesList.size()) {
+            System.out.println("Помилка: такого об'єкта не існує.");
+            return;
+        }
+
+        existingObject = clothesList.get(index - 1);
+        newObject = createModifiedObject(scanner, existingObject);
+
+        if (newObject == null) {
+            System.out.println("Модифікацію скасовано.");
+            return;
+        }
+
+        if (store.update(existingObject, newObject)) {
+            System.out.println("Об'єкт успішно оновлено.");
+        } else {
+            System.out.println("Об'єкт не знайдено.");
+        }
+    }
+
+    /**
+     * Створює новий об'єкт на основі існуючого з одним зміненим атрибутом.
+     */
+    private static Clothes createModifiedObject(Scanner scanner, Clothes existingObject) {
+        String name = existingObject.getName();
+        String size = existingObject.getSize();
+        double price = existingObject.getPrice();
+        String material;
+        String sleeveType;
+        String fitType;
+        boolean ripped;
+        String printType;
+        boolean sportsStyle;
+        int choice;
+
+        if (existingObject instanceof Jeans) {
+            Jeans jeans = (Jeans) existingObject;
+            material = jeans.getMaterial();
+            fitType = jeans.getFitType();
+            ripped = jeans.isRipped();
+
+            System.out.println("\nОберіть атрибут для зміни:");
+            System.out.println("1. Назва");
+            System.out.println("2. Розмір");
+            System.out.println("3. Ціна");
+            System.out.println("4. Матеріал");
+            System.out.println("5. Тип крою");
+            System.out.println("6. Наявність розривів");
+            System.out.println("0. Скасувати");
+
+            choice = readMenuChoice(scanner);
+
+            switch (choice) {
+                case 1:
+                    name = readNonEmptyString(scanner, "Введіть нову назву: ");
+                    break;
+                case 2:
+                    size = readNonEmptyString(scanner, "Введіть новий розмір: ");
+                    break;
+                case 3:
+                    price = readPositiveDouble(scanner, "Введіть нову ціну: ");
+                    break;
+                case 4:
+                    material = readNonEmptyString(scanner, "Введіть новий матеріал: ");
+                    break;
+                case 5:
+                    fitType = readNonEmptyString(scanner, "Введіть новий тип крою: ");
+                    break;
+                case 6:
+                    ripped = readBoolean(scanner, "Введіть нове значення (true/false): ");
+                    break;
+                case 0:
+                    return null;
+                default:
+                    System.out.println("Помилка: такого пункту немає.");
+                    return null;
+            }
+
+            return new Jeans(name, size, price, material, fitType, ripped);
+        }
+
+        if (existingObject instanceof TShirt) {
+            TShirt tShirt = (TShirt) existingObject;
+            sleeveType = tShirt.getSleeveType();
+            printType = tShirt.getPrintType();
+            sportsStyle = tShirt.isSportsStyle();
+
+            System.out.println("\nОберіть атрибут для зміни:");
+            System.out.println("1. Назва");
+            System.out.println("2. Розмір");
+            System.out.println("3. Ціна");
+            System.out.println("4. Тип рукава");
+            System.out.println("5. Тип принта");
+            System.out.println("6. Спортивний стиль");
+            System.out.println("0. Скасувати");
+
+            choice = readMenuChoice(scanner);
+
+            switch (choice) {
+                case 1:
+                    name = readNonEmptyString(scanner, "Введіть нову назву: ");
+                    break;
+                case 2:
+                    size = readNonEmptyString(scanner, "Введіть новий розмір: ");
+                    break;
+                case 3:
+                    price = readPositiveDouble(scanner, "Введіть нову ціну: ");
+                    break;
+                case 4:
+                    sleeveType = readNonEmptyString(scanner, "Введіть новий тип рукава: ");
+                    break;
+                case 5:
+                    printType = readNonEmptyString(scanner, "Введіть новий тип принта: ");
+                    break;
+                case 6:
+                    sportsStyle = readBoolean(scanner, "Введіть нове значення (true/false): ");
+                    break;
+                case 0:
+                    return null;
+                default:
+                    System.out.println("Помилка: такого пункту немає.");
+                    return null;
+            }
+
+            return new TShirt(name, size, price, sleeveType, printType, sportsStyle);
+        }
+
+        if (existingObject instanceof Pants) {
+            Pants pants = (Pants) existingObject;
+            material = pants.getMaterial();
+
+            System.out.println("\nОберіть атрибут для зміни:");
+            System.out.println("1. Назва");
+            System.out.println("2. Розмір");
+            System.out.println("3. Ціна");
+            System.out.println("4. Матеріал");
+            System.out.println("0. Скасувати");
+
+            choice = readMenuChoice(scanner);
+
+            switch (choice) {
+                case 1:
+                    name = readNonEmptyString(scanner, "Введіть нову назву: ");
+                    break;
+                case 2:
+                    size = readNonEmptyString(scanner, "Введіть новий розмір: ");
+                    break;
+                case 3:
+                    price = readPositiveDouble(scanner, "Введіть нову ціну: ");
+                    break;
+                case 4:
+                    material = readNonEmptyString(scanner, "Введіть новий матеріал: ");
+                    break;
+                case 0:
+                    return null;
+                default:
+                    System.out.println("Помилка: такого пункту немає.");
+                    return null;
+            }
+
+            return new Pants(name, size, price, material);
+        }
+
+        if (existingObject instanceof Shirts) {
+            Shirts shirts = (Shirts) existingObject;
+            sleeveType = shirts.getSleeveType();
+
+            System.out.println("\nОберіть атрибут для зміни:");
+            System.out.println("1. Назва");
+            System.out.println("2. Розмір");
+            System.out.println("3. Ціна");
+            System.out.println("4. Тип рукава");
+            System.out.println("0. Скасувати");
+
+            choice = readMenuChoice(scanner);
+
+            switch (choice) {
+                case 1:
+                    name = readNonEmptyString(scanner, "Введіть нову назву: ");
+                    break;
+                case 2:
+                    size = readNonEmptyString(scanner, "Введіть новий розмір: ");
+                    break;
+                case 3:
+                    price = readPositiveDouble(scanner, "Введіть нову ціну: ");
+                    break;
+                case 4:
+                    sleeveType = readNonEmptyString(scanner, "Введіть новий тип рукава: ");
+                    break;
+                case 0:
+                    return null;
+                default:
+                    System.out.println("Помилка: такого пункту немає.");
+                    return null;
+            }
+
+            return new Shirts(name, size, price, sleeveType);
+        }
+
+        return null;
     }
 
     /**

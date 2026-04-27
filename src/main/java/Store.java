@@ -74,6 +74,26 @@ public class Store {
     }
 
     /**
+     * Оновлює дані існуючого об'єкта.
+     */
+    public boolean update(Clothes existingObject, Clothes newObject) {
+        int i;
+
+        if (existingObject == null || newObject == null) {
+            throw new IllegalArgumentException("Об'єкти не можуть бути null.");
+        }
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).equals(existingObject)) {
+                clothesList.set(i, newObject);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Повертає всі об'єкти, що відповідають вказаному імені.
      */
     public ArrayList<Clothes> searchByName(String name) {

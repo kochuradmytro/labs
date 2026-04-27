@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Власний виняток для ситуацій, коли об'єкт одягу не знайдено.
  */
 public class ClothesNotFoundException extends RuntimeException {

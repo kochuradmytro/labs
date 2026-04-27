@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Власний виняток для некоректних значень полів.
  */
 public class InvalidFieldValueException extends IllegalArgumentException {

@@ -149,7 +149,7 @@ public class Main {
         int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
-            Clothes pants = new Pants(id, name, size, price, material);
+            Clothes pants = new Pants(name, size, price, material);
             store.addNewClothes(pants, quantity);
             System.out.println("Об'єкт Pants успішно додано.");
         } catch (IllegalArgumentException e) {
@@ -171,7 +171,7 @@ public class Main {
         int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
-            Clothes shirt = new Shirts(id, name, size, price, sleeveType);
+            Clothes shirt = new Shirts(name, size, price, sleeveType);
             store.addNewClothes(shirt, quantity);
             System.out.println("Об'єкт Shirts успішно додано.");
         } catch (IllegalArgumentException e) {
@@ -195,7 +195,7 @@ public class Main {
         int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
-            Clothes jeans = new Jeans(id, name, size, price, material, fitType, ripped);
+            Clothes jeans = new Jeans(name, size, price, material, fitType, ripped);
             store.addNewClothes(jeans, quantity);
             System.out.println("Об'єкт Jeans успішно додано.");
         } catch (IllegalArgumentException e) {
@@ -219,7 +219,7 @@ public class Main {
         int quantity = readPositiveInt(scanner, "Введіть кількість: ");
 
         try {
-            Clothes tShirt = new TShirt(id, name, size, price, sleeveType, printType, sportsStyle);
+            Clothes tShirt = new TShirt(name, size, price, sleeveType, printType, sportsStyle);
             store.addNewClothes(tShirt, quantity);
             System.out.println("Об'єкт TShirt успішно додано.");
         } catch (IllegalArgumentException e) {

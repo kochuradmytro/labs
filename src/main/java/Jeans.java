@@ -26,7 +26,7 @@ public class Jeans extends Pants {
      */
     public void setFitType(String fitType) {
         if (fitType == null || fitType.trim().isEmpty()) {
-            throw new IllegalArgumentException("Тип крою не може бути порожнім.");
+            throw new InvalidFieldValueException("Тип крою не може бути порожнім.");
         }
         this.fitType = fitType.trim();
     }

@@ -24,7 +24,7 @@ public class Pants extends Clothes {
      */
     public void setMaterial(String material) {
         if (material == null || material.trim().isEmpty()) {
-            throw new IllegalArgumentException("Матеріал не може бути порожнім.");
+            throw new InvalidFieldValueException("Матеріал не може бути порожнім.");
         }
         this.material = material.trim();
     }

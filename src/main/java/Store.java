@@ -29,7 +29,7 @@ public class Store {
      */
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Назва магазину не може бути порожньою.");
+            throw new InvalidFieldValueException("Назва магазину не може бути порожньою.");
         }
         this.name = name.trim();
     }
@@ -55,11 +55,11 @@ public class Store {
         int i;
 
         if (cl == null) {
-            throw new IllegalArgumentException("Об'єкт одягу не може бути null.");
+            throw new InvalidFieldValueException("Об'єкт одягу не може бути null.");
         }
 
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Кількість повинна бути більше 0.");
+            throw new InvalidFieldValueException("Кількість повинна бути більше 0.");
         }
 
         for (i = 0; i < clothesList.size(); i++) {
@@ -71,47 +71,6 @@ public class Store {
 
         clothesList.add(cl);
         quantities.add(quantity);
-    }
-
-    /**
-     * Оновлює дані існуючого об'єкта.
-     */
-    public boolean update(Clothes existingObject, Clothes newObject) {
-        int i;
-
-        if (existingObject == null || newObject == null) {
-            throw new IllegalArgumentException("Об'єкти не можуть бути null.");
-        }
-
-        for (i = 0; i < clothesList.size(); i++) {
-            if (clothesList.get(i).equals(existingObject)) {
-                clothesList.set(i, newObject);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Видаляє існуючий об'єкт з колекції.
-     */
-    public boolean delete(Clothes existingObject) {
-        int i;
-
-        if (existingObject == null) {
-            throw new IllegalArgumentException("Об'єкт не може бути null.");
-        }
-
-        for (i = 0; i < clothesList.size(); i++) {
-            if (clothesList.get(i).equals(existingObject)) {
-                clothesList.remove(i);
-                quantities.remove(i);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -175,5 +134,49 @@ public class Store {
         }
 
         return 0;
+    }
+
+    /**
+     * Оновлює дані існуючого об'єкта.
+     */
+    public boolean update(Clothes existingObject, Clothes newObject) {
+        int i;
+        int quantity;
+
+        if (existingObject == null || newObject == null) {
+            throw new InvalidFieldValueException("Об'єкти не можуть бути null.");
+        }
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).equals(existingObject)) {
+                quantity = quantities.get(i);
+                clothesList.set(i, newObject);
+                quantities.set(i, quantity);
+                return true;
+            }
+        }
+
+        throw new ClothesNotFoundException("Об'єкт для оновлення не знайдено.");
+    }
+
+    /**
+     * Видаляє існуючий об'єкт з колекції.
+     */
+    public boolean delete(Clothes existingObject) {
+        int i;
+
+        if (existingObject == null) {
+            throw new InvalidFieldValueException("Об'єкт не може бути null.");
+        }
+
+        for (i = 0; i < clothesList.size(); i++) {
+            if (clothesList.get(i).equals(existingObject)) {
+                clothesList.remove(i);
+                quantities.remove(i);
+                return true;
+            }
+        }
+
+        throw new ClothesNotFoundException("Об'єкт для видалення не знайдено.");
     }
 }

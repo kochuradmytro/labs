@@ -24,7 +24,7 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
      */
     public Clothes(Clothes other) {
         if (other == null) {
-            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
+            throw new InvalidFieldValueException("Об'єкт для копіювання не може бути null.");
         }
 
         this.uuid = UUID.randomUUID();
@@ -53,7 +53,7 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
      */
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Назва не може бути порожньою.");
+            throw new InvalidFieldValueException("Назва не може бути порожньою.");
         }
         this.name = name.trim();
     }
@@ -70,7 +70,7 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
      */
     public void setSize(String size) {
         if (size == null || size.trim().isEmpty()) {
-            throw new IllegalArgumentException("Розмір не може бути порожнім.");
+            throw new InvalidFieldValueException("Розмір не може бути порожнім.");
         }
         this.size = size.trim();
     }
@@ -87,7 +87,7 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
      */
     public void setPrice(double price) {
         if (price <= 0) {
-            throw new IllegalArgumentException("Ціна повинна бути більше 0.");
+            throw new InvalidFieldValueException("Ціна повинна бути більше 0.");
         }
         this.price = price;
     }

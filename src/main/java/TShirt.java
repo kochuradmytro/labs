@@ -26,7 +26,7 @@ public class TShirt extends Shirts {
      */
     public void setPrintType(String printType) {
         if (printType == null || printType.trim().isEmpty()) {
-            throw new IllegalArgumentException("Тип принта не може бути порожнім.");
+            throw new InvalidFieldValueException("Тип принта не може бути порожнім.");
         }
         this.printType = printType.trim();
     }

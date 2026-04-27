@@ -24,7 +24,7 @@ public class Shirts extends Clothes {
      */
     public void setSleeveType(String sleeveType) {
         if (sleeveType == null || sleeveType.trim().isEmpty()) {
-            throw new IllegalArgumentException("Тип рукава не може бути порожнім.");
+            throw new InvalidFieldValueException("Тип рукава не може бути порожнім.");
         }
         this.sleeveType = sleeveType.trim();
     }

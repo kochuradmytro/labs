@@ -8,8 +8,8 @@ public class TShirt extends Shirts {
     /**
      * Створює об'єкт футболки.
      */
-    public TShirt(int id, String name, String size, double price, String sleeveType, String printType, boolean sportsStyle) {
-        super(id, name, size, price, sleeveType);
+    public TShirt(String name, String size, double price, String sleeveType, String printType, boolean sportsStyle) {
+        super(name, size, price, sleeveType);
         setPrintType(printType);
         this.sportsStyle = sportsStyle;
     }
@@ -60,7 +60,6 @@ public class TShirt extends Shirts {
     public String toString() {
         return "TShirt{" +
                 "uuid=" + getUuid() +
-                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

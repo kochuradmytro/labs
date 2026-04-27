@@ -7,8 +7,8 @@ public class Pants extends Clothes {
     /**
      * Створює об'єкт штанів.
      */
-    public Pants(int id, String name, String size, double price, String material) {
-        super(id, name, size, price);
+    public Pants(String name, String size, double price, String material) {
+        super(name, size, price);
         setMaterial(material);
     }
 
@@ -44,7 +44,6 @@ public class Pants extends Clothes {
     public String toString() {
         return "Pants{" +
                 "uuid=" + getUuid() +
-                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

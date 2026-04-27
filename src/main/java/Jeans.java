@@ -8,8 +8,8 @@ public class Jeans extends Pants {
     /**
      * Створює об'єкт джинсів.
      */
-    public Jeans(int id, String name, String size, double price, String material, String fitType, boolean ripped) {
-        super(id, name, size, price, material);
+    public Jeans(String name, String size, double price, String material, String fitType, boolean ripped) {
+        super(name, size, price, material);
         setFitType(fitType);
         this.ripped = ripped;
     }
@@ -60,7 +60,6 @@ public class Jeans extends Pants {
     public String toString() {
         return "Jeans{" +
                 "uuid=" + getUuid() +
-                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

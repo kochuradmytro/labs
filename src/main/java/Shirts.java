@@ -7,8 +7,8 @@ public class Shirts extends Clothes {
     /**
      * Створює об'єкт сорочки.
      */
-    public Shirts(int id, String name, String size, double price, String sleeveType) {
-        super(id, name, size, price);
+    public Shirts(String name, String size, double price, String sleeveType) {
+        super(name, size, price);
         setSleeveType(sleeveType);
     }
 
@@ -44,7 +44,6 @@ public class Shirts extends Clothes {
     public String toString() {
         return "Shirts{" +
                 "uuid=" + getUuid() +
-                ", id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", size='" + getSize() + '\'' +
                 ", price=" + getPrice() +

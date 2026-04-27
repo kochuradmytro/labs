@@ -5,7 +5,6 @@ import java.util.UUID;
  */
 public abstract class Clothes implements Comparable<Clothes>, Identifiable {
     private UUID uuid;
-    private int id;
     private String name;
     private String size;
     private double price;
@@ -13,9 +12,8 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
     /**
      * Створює об'єкт одягу.
      */
-    public Clothes(int id, String name, String size, double price) {
+    public Clothes(String name, String size, double price) {
         this.uuid = UUID.randomUUID();
-        setId(id);
         setName(name);
         setSize(size);
         setPrice(price);
@@ -30,7 +28,6 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
         }
 
         this.uuid = UUID.randomUUID();
-        this.id = other.id;
         this.name = other.name;
         this.size = other.size;
         this.price = other.price;
@@ -42,23 +39,6 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
     @Override
     public UUID getUuid() {
         return uuid;
-    }
-
-    /**
-     * Повертає ідентифікатор одягу.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Встановлює ідентифікатор одягу.
-     */
-    public void setId(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("id повинен бути більше 0.");
-        }
-        this.id = id;
     }
 
     /**
@@ -127,7 +107,6 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
     public String toString() {
         return "Clothes{" +
                 "uuid=" + uuid +
-                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
@@ -149,8 +128,7 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
 
         Clothes clothes = (Clothes) obj;
 
-        return id == clothes.id &&
-                Double.compare(price, clothes.price) == 0 &&
+        return Double.compare(price, clothes.price) == 0 &&
                 name.equals(clothes.name) &&
                 size.equals(clothes.size);
     }
